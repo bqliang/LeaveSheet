@@ -1,0 +1,80 @@
+<resources>
+
+    <style name="Theme.MyApp" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.LeaveSheet" parent="Theme.MyApp">
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/wework_blue</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Customize your theme here. -->
+        <item name="materialCardViewStyle">@style/ThemeOverlay.LeaveSheet.CardView</item>
+        <item name="materialDividerStyle">@style/ThemeOverlay.LeaveSheet.Divider</item>
+        <item name="toolbarStyle">@style/ThemeOverlay.LeaveSheet.ToolBar</item>
+        <!-- to set id for toolbar menu overflow button -->
+        <item name="actionOverflowButtonStyle">@style/ThemeOverlay.LeaveSheet.ActionOverFlowButton</item>
+    </style>
+    
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="postSplashScreenTheme">@style/Theme.LeaveSheet</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_screen</item>
+    </style>
+
+
+    <style name="TextAppearance.LeaveSheet.Card.Title" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <!-- 工具栏标题文字 -->
+    <style name="TextAppearance.LeaveSheet.ToolBar.Title" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <!-- 返回按钮文字 -->
+    <style name="TextAppearance.LeaveSheet.Back.Button" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textSize">16.5sp</item>
+    </style>
+
+    <!-- 工具栏 -->
+    <style name="ThemeOverlay.LeaveSheet.ToolBar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@color/wework_blue</item>
+        <item name="navigationIconTint">@android:color/white</item>
+        <item name="titleTextColor">@android:color/white</item>
+        <item name="titleTextAppearance">@style/TextAppearance.LeaveSheet.ToolBar.Title</item>
+    </style>
+
+    <!-- 卡片 -->
+    <style name="ThemeOverlay.LeaveSheet.CardView" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@android:color/white</item>
+    </style>
+
+    <!-- 圆角形状 -->
+    <style name="ShapeAppearance.LeaveSheet.Header" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+    </style>
+
+
+    <!-- 分割线 -->
+    <style name="ThemeOverlay.LeaveSheet.Divider" parent="Widget.Material3.MaterialDivider">
+        <item name="dividerColor">#D9D9D9</item>
+        <item name="dividerThickness">0.5dp</item>
+    </style>
+
+    <!-- 返回按钮 -->
+    <style name="ThemeOverlay.LeaveSheet.Back.Button" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/orange_dark</item>
+        <item name="android:textAppearance">@style/TextAppearance.LeaveSheet.Back.Button</item>
+        <item name="backgroundTint">@color/orange</item>
+    </style>
+
+    <style name="ThemeOverlay.LeaveSheet.ActionOverFlowButton" parent="Widget.AppCompat.Light.ActionButton.Overflow">
+        <item name="android:id">@id/action_overflow_btn</item>
+    </style>
+
+</resources>

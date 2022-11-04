@@ -1,0 +1,148 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'com.google.protobuf' version '0.9.1'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin' version '2.0.1'
+}
+
+def srcDirs = [
+        'main',
+        'edit'
+]
+
+android {
+    signingConfigs {
+        release {
+            storeFile file('../key.jks')
+            storePassword System.getenv("KEY_STORE_PASSWORD")
+            keyAlias System.getenv("SIGNING_KEY_ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+    }
+    namespace 'com.bqliang.leavesheet'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId 'com.bqliang.leavesheet'
+        minSdk 26
+        targetSdk 33
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix ".debug"
+        }
+
+        applicationVariants.all { variant ->
+            variant.outputs.all {
+                outputFileName = "${rootProject.name}-${variant.versionName}-${variant.name}.apk"
+            }
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main {
+            res.srcDirs = ['src/main/res']
+            srcDirs.forEach {
+                res.srcDirs += 'src/main/java/com/bqliang/leavesheet/' + it + '/res'
+            }
+        }
+    }
+}
+
+dependencies {
+    // ViewPager2
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+    // FancyShowCaseView
+    implementation 'com.github.faruktoptas:FancyShowCaseView:1.3.9'
+    // Jetpack Room
+    implementation 'androidx.room:room-runtime:2.4.3'
+    // To use Kotlin annotation processing tool (kapt)
+    kapt 'androidx.room:room-compiler:2.4.3'
+    // Kotlin Extensions and Coroutines support for Room
+    implementation 'androidx.room:room-ktx:2.4.3'
+    // rikkaX Switch Bar
+    implementation 'dev.rikka.rikkax.widget:switchbar:1.0.2'
+    // splashscreen
+    implementation 'androidx.core:core-splashscreen:1.0.0-rc01'
+    // RikkaX Html
+    implementation("dev.rikka.rikkax.html:html:1.1.2")
+    implementation("dev.rikka.rikkax.html:html-ktx:1.1.2")
+    // App Center
+    implementation 'com.microsoft.appcenter:appcenter-analytics:4.4.5'
+    implementation 'com.microsoft.appcenter:appcenter-crashes:4.4.5'
+    implementation "com.microsoft.appcenter:appcenter-distribute:4.4.5"
+
+    // Preferences DataStore (SharedPreferences like APIs)
+    implementation 'androidx.datastore:datastore-preferences:1.0.0'
+    // Typed DataStore (Typed API surface, such as Proto)
+    implementation 'androidx.datastore:datastore:1.0.0'
+    implementation 'com.google.protobuf:protobuf-javalite:3.21.8'
+    // MMKV
+    implementation 'com.tencent:mmkv:1.2.14'
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    // ViewModel
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    // LiveData
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+    // Lifecycles only (without ViewModel or LiveData)
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+
+
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.activity:activity-ktx:1.6.1'
+    implementation 'androidx.fragment:fragment-ktx:1.5.4'
+    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.21.8'
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
+}

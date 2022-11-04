@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 意见审核 卡片 -->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="leaveSheet"
+            type="com.bqliang.leavesheet.LeaveSheet" />
+
+        <variable
+            name="facultyAuditVisible"
+            type="Boolean" />
+
+        <import type="com.bqliang.leavesheet.utils.Converter" />
+        <import type="android.view.View"/>
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:animateLayoutChanges="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="75dp">
+
+            <View
+                android:id="@+id/left_grep_view"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                android:layout_marginLeft="20dp"
+                android:background="@color/grey"
+                app:layout_constraintBottom_toBottomOf="@+id/audit_opinion_headline_1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/audit_opinion_headline_1" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/audit_opinion_headline_1"
+                style="@style/TextAppearance.LeaveSheet.Card.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingVertical="2dp"
+                android:text="意见审核"
+                app:layout_constraintLeft_toRightOf="@id/left_grep_view"
+                app:layout_constraintRight_toLeftOf="@id/right_grep_view"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/right_grep_view"
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/grey"
+                app:layout_constraintBottom_toBottomOf="@+id/audit_opinion_headline_1"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/audit_opinion_headline_1" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider_below_headline_1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/audit_opinion_headline_1" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:tint="@{facultyAuditVisible ? @color/wework_blue : @color/orange}"
+                android:id="@+id/counselor_audit_opinion_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider_below_headline_1"
+                app:srcCompat="@drawable/ic_orange_circle_outline_22" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/counselor_audit_headline_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="辅导员批示"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/counselor_audit_opinion_icon"
+                app:layout_constraintLeft_toRightOf="@id/counselor_audit_opinion_icon"
+                app:layout_constraintTop_toTopOf="@+id/counselor_audit_opinion_icon"
+                tools:text="辅导员批示" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider_below_counselor_audit_headline_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="@id/counselor_audit_headline_2"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/counselor_audit_headline_2" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/counselor_audit_opinion_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:maxLines="1"
+                android:text="审核意见"
+                android:textColor="@color/grey_audit_opinion_property"
+                app:layout_constraintLeft_toLeftOf="@id/counselor_audit_headline_2"
+                app:layout_constraintTop_toBottomOf="@id/divider_below_counselor_audit_headline_2" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/counselor_audit_opinion_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="@{leaveSheet.counselorAuditOpinion}"
+                app:layout_constraintLeft_toRightOf="@+id/counselor_audit_headline_2"
+                app:layout_constraintRight_toRightOf="@id/right_guideline"
+                app:layout_constraintTop_toTopOf="@id/counselor_audit_opinion_title"
+                tools:text="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/counselor_audit_department_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:maxLines="1"
+                android:text="办理部门"
+                android:textColor="@color/grey_audit_opinion_property"
+                app:layout_constraintLeft_toLeftOf="@+id/counselor_audit_headline_2"
+                app:layout_constraintTop_toBottomOf="@+id/counselor_audit_opinion_content" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/counselor_audit_department_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:maxLines="1"
+                android:text="@{leaveSheet.faculty}"
+                app:layout_constraintBaseline_toBaselineOf="@id/counselor_audit_department_title"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/counselor_audit_headline_2"
+                app:layout_constraintRight_toRightOf="@id/right_guideline"
+                tools:text="电气与计算机工程学院" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/counselor_audit_auditor_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:maxLines="1"
+                android:text="审批人"
+                android:textColor="@color/grey_audit_opinion_property"
+                app:layout_constraintLeft_toLeftOf="@+id/counselor_audit_headline_2"
+                app:layout_constraintTop_toBottomOf="@id/counselor_audit_department_title" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/counselor_audit_auditor_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:maxLines="1"
+                android:text="@{leaveSheet.counselor}"
+                app:layout_constraintBaseline_toBaselineOf="@+id/counselor_audit_auditor_title"
+                app:layout_constraintLeft_toRightOf="@id/counselor_audit_headline_2"
+                app:layout_constraintRight_toLeftOf="@id/right_guideline"
+                tools:text="XXX" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/counselor_audit_time_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:maxLines="1"
+                android:text="办理时间"
+                android:textColor="@color/grey_audit_opinion_property"
+                app:layout_constraintLeft_toLeftOf="@+id/counselor_audit_headline_2"
+                app:layout_constraintTop_toBottomOf="@id/counselor_audit_auditor_title" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/counselor_audit_time_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:maxLines="1"
+                android:text="@{Converter.auditDateTimeFormat(leaveSheet.counselorAuditTime)}"
+                app:layout_constraintBaseline_toBaselineOf="@+id/counselor_audit_time_title"
+                app:layout_constraintLeft_toRightOf="@id/counselor_audit_headline_2"
+                app:layout_constraintRight_toLeftOf="@id/right_guideline"
+                tools:text="2022-10-24 09:48:32" />
+
+            <androidx.constraintlayout.widget.Group
+                android:visibility="@{facultyAuditVisible? View.VISIBLE : View.GONE, default=visible}"
+                android:id="@+id/faculty_audit_part"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="divider_above_faculty_audit_headline_2,faculty_audit_opinion_icon,faculty_audit_headline_2,divider_below_faculty_audit_headline_2,faculty_audit_opinion_title,faculty_audit_opinion_content,faculty_audit_department_title,faculty_audit_department_content,faculty_audit_auditor_title,faculty_audit_auditor_content,faculty_audit_time_title,faculty_audit_time_content,connect_line"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/counselor_audit_time_title" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider_above_faculty_audit_headline_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="@id/counselor_audit_headline_2"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/counselor_audit_time_title" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/faculty_audit_opinion_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="@id/counselor_audit_opinion_icon"
+                app:layout_constraintRight_toRightOf="@id/counselor_audit_opinion_icon"
+                app:layout_constraintTop_toBottomOf="@id/divider_above_faculty_audit_headline_2"
+                app:srcCompat="@drawable/ic_orange_circle_outline_22" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/faculty_audit_headline_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:text="院系办公室意见"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/faculty_audit_opinion_icon"
+                app:layout_constraintLeft_toLeftOf="@id/counselor_audit_headline_2"
+                app:layout_constraintTop_toTopOf="@+id/faculty_audit_opinion_icon"
+                tools:text="院系办公室意见" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider_below_faculty_audit_headline_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="@id/faculty_audit_headline_2"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/faculty_audit_headline_2" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/faculty_audit_opinion_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:maxLines="1"
+                android:text="审核意见"
+                android:textColor="@color/grey_audit_opinion_property"
+                app:layout_constraintLeft_toLeftOf="@id/faculty_audit_headline_2"
+                app:layout_constraintTop_toBottomOf="@id/divider_below_faculty_audit_headline_2" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/faculty_audit_opinion_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="@{leaveSheet.facultyAuditOpinion}"
+                app:layout_constraintLeft_toRightOf="@+id/counselor_audit_headline_2"
+                app:layout_constraintRight_toRightOf="@id/right_guideline"
+                app:layout_constraintTop_toTopOf="@id/faculty_audit_opinion_title"
+                tools:text="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/faculty_audit_department_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:maxLines="1"
+                android:text="办理部门"
+                android:textColor="@color/grey_audit_opinion_property"
+                app:layout_constraintLeft_toLeftOf="@+id/faculty_audit_headline_2"
+                app:layout_constraintTop_toBottomOf="@+id/faculty_audit_opinion_content" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/faculty_audit_department_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:maxLines="1"
+                android:text="@{leaveSheet.faculty}"
+                app:layout_constraintBaseline_toBaselineOf="@id/faculty_audit_department_title"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/counselor_audit_headline_2"
+                app:layout_constraintRight_toRightOf="@id/right_guideline"
+                tools:text="电气与计算机工程学院" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/faculty_audit_auditor_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:maxLines="1"
+                android:text="审批人"
+                android:textColor="@color/grey_audit_opinion_property"
+                app:layout_constraintLeft_toLeftOf="@+id/faculty_audit_headline_2"
+                app:layout_constraintTop_toBottomOf="@id/faculty_audit_department_title" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/faculty_audit_auditor_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:maxLines="1"
+                android:text="@{leaveSheet.facultyAuditor}"
+                app:layout_constraintBaseline_toBaselineOf="@+id/faculty_audit_auditor_title"
+                app:layout_constraintLeft_toRightOf="@id/counselor_audit_headline_2"
+                app:layout_constraintRight_toLeftOf="@id/right_guideline"
+                tools:text="XXX" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/faculty_audit_time_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:maxLines="1"
+                android:text="办理时间"
+                android:textColor="@color/grey_audit_opinion_property"
+                app:layout_constraintLeft_toLeftOf="@+id/faculty_audit_headline_2"
+                app:layout_constraintTop_toBottomOf="@id/faculty_audit_auditor_title" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/faculty_audit_time_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:maxLines="1"
+                android:text="@{Converter.auditDateTimeFormat(leaveSheet.facultyAuditTime)}"
+                app:layout_constraintBaseline_toBaselineOf="@+id/faculty_audit_time_title"
+                app:layout_constraintLeft_toRightOf="@id/counselor_audit_headline_2"
+                app:layout_constraintRight_toLeftOf="@id/right_guideline"
+                tools:text="2022-10-24 09:48:32" />
+
+            <View
+                android:id="@+id/connect_line"
+                android:layout_width="3dp"
+                android:layout_height="0dp"
+                android:background="@color/wework_blue"
+                app:layout_constraintBottom_toTopOf="@id/faculty_audit_opinion_icon"
+                app:layout_constraintLeft_toLeftOf="@id/counselor_audit_opinion_icon"
+                app:layout_constraintRight_toRightOf="@id/faculty_audit_opinion_icon"
+                app:layout_constraintTop_toBottomOf="@id/counselor_audit_opinion_icon" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/right_guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="16dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>

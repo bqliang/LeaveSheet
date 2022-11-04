@@ -1,0 +1,2 @@
+# LeaveSheet [![Android CI](https://github.com/bqliang/LeaveSheet/actions/workflows/android.yml/badge.svg)](https://github.com/bqliang/LeaveSheet/actions/workflows/android.yml)  
+[Download](https://github.com/bqliang/LeaveSheet/releases/)

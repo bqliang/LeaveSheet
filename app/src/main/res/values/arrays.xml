@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="list_leave_type">
+        <item>事假</item>
+        <item>病假</item>
+    </string-array>
+</resources>
