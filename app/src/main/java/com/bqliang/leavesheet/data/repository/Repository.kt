@@ -1,15 +1,18 @@
 package com.bqliang.leavesheet.data.repository
 
-import com.bqliang.leavesheet.data.database.MyDatabase
+import com.bqliang.leavesheet.data.database.LeaveSheetDatabase
 import com.bqliang.leavesheet.data.database.entity.Annex
 
 
 object Repository {
 
-    private val annexDao by lazy { MyDatabase.getDatabase().annexDao() }
+    private val annexDao by lazy { LeaveSheetDatabase.getDatabase().annexDao() }
 
-    suspend fun updateAnnexList(annexList: List<Annex>) {
-        annexDao.insetAnnex(annexList)
+    suspend fun insertAnnexes(annexes: List<Annex>) {
+        annexDao.insetAnnexes(annexes)
         annexDao.clean()
     }
+
+
+    suspend fun deleteAnnex(annex: Annex) = annexDao.deleteAnnex(annex)
 }

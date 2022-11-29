@@ -16,8 +16,7 @@
             android:id="@android:id/icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:importantForAccessibility="no"
-            tools:src="@drawable/ic_outline_file_download_24" />
+            android:importantForAccessibility="no" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"

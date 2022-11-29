@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="wework_blue">#3a75c5</color>
-    <color name="orange">#fe5824</color>
-    <color name="orange_dark">#D03A0B</color>
-    <color name="grey">#9d9d9f</color>
-
-    <color name="grey_details_property">#6E6D6D</color>
-    <color name="grey_audit_opinion_property">#939393</color>
+    <color name="wework_orange_light">#ffbb7e</color>
+    <color name="wework_orange">#ff5722</color>
 </resources>

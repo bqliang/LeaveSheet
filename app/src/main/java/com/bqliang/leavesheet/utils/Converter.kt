@@ -29,17 +29,6 @@ fun timeFormat(timeInMillis: Long): String {
 }
 
 
-fun getLeaveSheetNum(timeInMillis: Long): String {
-    val prefix = dateFormat(timeInMillis).replace("-", "")
-    val stringBuffer = StringBuffer(prefix)
-    repeat(4) {
-        val randomNum = (0..9).random()
-        stringBuffer.append(randomNum)
-    }
-    return stringBuffer.toString()
-}
-
-
 fun durationInDayFormat(durationInDays: Float): String {
     val integerPart = durationInDays.toInt()
     val decimalPart = ((durationInDays - integerPart) * 10).toInt()

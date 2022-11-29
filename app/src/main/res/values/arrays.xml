@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="list_leave_type">
-        <item>事假</item>
+    <string-array name="leave_type_list">
         <item>病假</item>
+        <item>事假</item>
+    </string-array>
+
+    <string-array name="faculty_list">
+        <item>文学与传媒学院</item>
+        <item>外国语学院</item>
+        <item>公共管理学院</item>
+        <item>会计学院</item>
+        <item>商学院</item>
+        <item>政商研究院</item>
+        <item>电气与计算机工程学院</item>
+        <item>艺术设计与创意产业系</item>
+        <item>音乐系</item>
+        <item>护理与健康学院</item>
+        <item>云康医学与健康学院</item>
+        <item>工商管理类</item>
+        <item>达人书院</item>
+        <item>广州南方智能传感器研究院</item>
+        <item>中医药健康学院</item>
     </string-array>
 </resources>

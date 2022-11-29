@@ -1,31 +1,22 @@
 package com.bqliang.leavesheet.main
 
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.pm.PackageManager
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
-import android.provider.OpenableColumns
-import android.text.method.LinkMovementMethod
-import android.view.WindowManager
-import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import android.view.View
+import android.webkit.WebSettings
+import android.webkit.WebViewClient.*
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.children
+import androidx.core.view.*
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.lifecycleScope
-import com.bqliang.leavesheet.BuildConfig
-import com.bqliang.leavesheet.R
-import com.bqliang.leavesheet.adapter.AnnexesAdapter
+import com.bqliang.leavesheet.*
+import com.bqliang.leavesheet.data.database.LeaveSheetDatabase
+import com.bqliang.leavesheet.data.datastore.LeaveSheet
 import com.bqliang.leavesheet.data.datastore.SettingsDataStore
-import com.bqliang.leavesheet.databinding.ActivityLeaveSheetBinding
-import com.bqliang.leavesheet.databinding.DialogAboutBinding
-import com.bqliang.leavesheet.databinding.DialogSettingsBinding
-import com.bqliang.leavesheet.edit.EditActivity
+import com.bqliang.leavesheet.data.datastore.leaveSheetDataStore
+import com.bqliang.leavesheet.databinding.ActivityLeavesheetBinding
+import com.bqliang.leavesheet.settings.SettingsActivity
 import com.bqliang.leavesheet.utils.launchActivity
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -36,69 +27,50 @@ import com.microsoft.appcenter.distribute.Distribute
 import com.microsoft.appcenter.distribute.DistributeListener
 import com.microsoft.appcenter.distribute.ReleaseDetails
 import com.microsoft.appcenter.distribute.UpdateAction
-import kotlinx.coroutines.launch
-import me.toptas.fancyshowcase.FancyShowCaseQueue
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import me.toptas.fancyshowcase.FancyShowCaseView
-import me.toptas.fancyshowcase.FocusShape
-import me.toptas.fancyshowcase.listener.OnCompleteListener
-import rikka.html.text.toHtml
 
 
-class LeaveSheetActivity : AppCompatActivity() {
+class LeaveSheetActivity : BaseActivity(), DistributeListener {
 
-    private lateinit var binding: ActivityLeaveSheetBinding
-    private val viewModel: LeaveSheetViewModel by viewModels()
-    private lateinit var pickMedia: ActivityResultLauncher<PickVisualMediaRequest>
+    companion object {
+        private const val URL = "http://bqliangdev.gitee.io/leave-sheet-web"
+    }
 
-    inner class MyDistributeListener : DistributeListener {
-
-        override fun onReleaseAvailable(
-            activity: Activity,
-            releaseDetails: ReleaseDetails
-        ): Boolean {
-            val versionName = releaseDetails.shortVersion
-            val versionCode = releaseDetails.version
-            val releaseNotes = releaseDetails.releaseNotes
-            val releaseNotesUrl = releaseDetails.releaseNotesUrl
-
-            val dialogBuilder = MaterialAlertDialogBuilder(activity)
-                .setTitle("新版本: $versionName")
-                .setMessage(releaseNotes)
-                .setPositiveButton("更新") { _, _ ->
-                    Distribute.notifyUpdateAction(UpdateAction.UPDATE)
-                }
-
-            if (!releaseDetails.isMandatoryUpdate) {
-                dialogBuilder.setNegativeButton("延迟") { _, _ ->
-                    Distribute.notifyUpdateAction(UpdateAction.POSTPONE)
-                }
-            }
-            dialogBuilder.setCancelable(false)
-            dialogBuilder.show()
-
-            // Return true if you're using your own dialog, false otherwise
-            return true
+    private lateinit var binding: ActivityLeavesheetBinding
+    private val leaveSheetJsonStr: Flow<String> by lazy {
+        MyApp.context.leaveSheetDataStore.data.map { leaveSheet ->
+            Json.encodeToString(LeaveSheet.serializer(), leaveSheet)
         }
-
-        override fun onNoReleaseAvailable(activity: Activity) {
-            Toast.makeText(activity, "已经是最新版本", Toast.LENGTH_LONG).show()
+    }
+    private val annexFileNameListJson: Flow<String> by lazy {
+        LeaveSheetDatabase.getDatabase().annexDao().loadAllAnnexDesc().map { annexList ->
+            val annexFileNameList = annexList.map { annnex -> annnex.fileName }
+            Json.encodeToString(annexFileNameList)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        // 设置 Material 3 动态颜色
         DynamicColors.applyToActivityIfAvailable(this)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_leave_sheet)
+        // 设置状态栏颜色为蓝色
+        window.statusBarColor = getColor(R.color.wework_blue)
+        // 设置深色状态栏(图标字体颜色为白色)
+        setDarkStatusBar()
 
-        binding.apply {
-            lifecycleOwner = this@LeaveSheetActivity
-            viewModel = this@LeaveSheetActivity.viewModel
-        }
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_leavesheet)
+        binding.lifecycleOwner = this
 
-        setUpView()
+        initView()
 
-        Distribute.setListener(MyDistributeListener())
+        // 设置 AppCenter
+        Distribute.setListener(this)
         AppCenter.start(
             application, BuildConfig.APP_CENTER_SECRET,
             Analytics::class.java, Crashes::class.java, Distribute::class.java
@@ -106,171 +78,146 @@ class LeaveSheetActivity : AppCompatActivity() {
     }
 
 
-    private fun setUpView() {
-        binding.cardAnnexList.recyclerView.adapter = AnnexesAdapter(viewModel)
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun initView() {
+        // 设置 webview
+        with(binding.webView) {
+            webViewClient = MyWebViewClient()
+            webChromeClient = MyWebChromeClient()
+            settings.javaScriptEnabled = true
+            settings.cacheMode = WebSettings.LOAD_NO_CACHE
+            loadUrl(URL)
+            addJavascriptInterface(WebAppInterface(this@LeaveSheetActivity), "Android")
+            doOnPreDraw { guide() }
+        }
 
-        with(binding.backButton) {
-            setOnClickListener { viewModel.openWeWork() }
 
-            setOnLongClickListener {
-                launchActivity<EditActivity>(context)
-                true
+        collectLifecycleFlow(MyWebViewClient.status) { status ->
+            if (status == null) return@collectLifecycleFlow
+            when (status) {
+                MyWebViewClient.Status.Loading -> {
+                    binding.webView.visibility = View.INVISIBLE
+                    binding.errorGroup.visibility = View.GONE
+                }
+
+                // 错误时隐藏 webview, 显示 LottieAnimationView
+                is MyWebViewClient.Status.Error -> {
+                    binding.errorText.text = when (status.error.errorCode) {
+                        ERROR_TIMEOUT -> "请求超时"
+                        ERROR_CONNECT -> "您的网络连接不可用"
+                        ERROR_HOST_LOOKUP -> "无法连接到服务器"
+                        else -> "${status.error.description} (${status.error.errorCode})"
+
+                    }
+
+                    binding.errorIcon.setImageResource(
+                        when (status.error.errorCode) {
+                            ERROR_CONNECT -> R.drawable.ic_connection_error
+                            ERROR_HOST_LOOKUP -> R.drawable.ic_connection_error
+                            else -> R.drawable.ic_round_error_outline_24
+                        }
+                    )
+
+                    binding.webView.visibility = View.INVISIBLE
+                    binding.errorGroup.visibility = View.VISIBLE
+                }
+
+                // 加载成功
+                MyWebViewClient.Status.Success -> {
+                    binding.webView.visibility = View.VISIBLE
+                    binding.errorGroup.visibility = View.GONE
+                }
             }
         }
 
-        with(binding.toolbar) {
+        combine(
+            MyWebViewClient.status,
+            leaveSheetJsonStr,
+            annexFileNameListJson,
+            SettingsDataStore.facultyAuditVisible
+        ) { status, leaveSheetJsonStr, annexFileNameListJsonStr, facultyAuditVisible ->
+            if (status is MyWebViewClient.Status.Success) {
+                binding.webView.evaluateJavascript(
+                    "javascript:edit('${leaveSheetJsonStr}', ${facultyAuditVisible});",
+                    null
+                )
+                binding.webView.evaluateJavascript(
+                    "javascript:setAnnex('${annexFileNameListJsonStr}');",
+                    null
+                )
+            }
+        }.collectLifecycle(this)
+
+        // 设置 toolbar
+        with(binding.toolbar)
+        {
             overflowIcon?.setTint(Color.WHITE)
-            setNavigationOnClickListener { viewModel.openWeWork() }
+
+            setNavigationOnClickListener {
+                val intent = packageManager.getLaunchIntentForPackage("com.tencent.wework")
+                if (intent != null)
+                    startActivity(intent)
+                else
+                    onBackPressedDispatcher.onBackPressed()
+            }
+
             setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
-                    R.id.toolbar_edit -> { launchActivity<EditActivity>(context) }
-                    R.id.toolbar_about -> { showAboutDialog() }
-                    R.id.toolbar_check_update -> { Distribute.checkForUpdate() }
-                    R.id.toolbar_settings -> { showSettingsDialog() }
-                    else -> {}
+                    R.id.menu_more -> launchActivity<SettingsActivity>(this@LeaveSheetActivity)
                 }
                 true
             }
         }
 
-        pickMedia =
-            registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) { uris ->
-                val fileNames = mutableListOf<String>()
-                uris?.forEach { uri ->
-                    val cursor = contentResolver.query(uri, null, null, null, null, null)
-                    cursor?.moveToFirst()
-                    cursor?.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
-                        ?.let {
-                            fileNames.add(it)
-                        }
-                    cursor?.close()
-                }
-                viewModel.saveAnnex(fileNames)
-            }
+        // 设置下拉刷新的颜色
+        binding.swipeRefreshLayout.setColorSchemeResources(R.color.wework_blue)
 
-        binding.cardAnnexList.headline.setOnLongClickListener {
-            val pickVisualMediaRequest =
-                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-            Toast.makeText(this, "请选择附件", Toast.LENGTH_SHORT).show()
-            pickMedia.launch(pickVisualMediaRequest)
-            true
+        // 下拉刷新 webview
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            binding.webView.reload()
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
+
+        // 重试按钮刷新 webview
+        binding.retryButton.setOnClickListener {
+            binding.webView.reload()
         }
     }
 
 
-    private fun guide() {
-        binding.scrollView.apply {
-            isSmoothScrollingEnabled = true
-//            fullScroll(View.FOCUS_DOWN)
-//            val location = IntArray(2)
-//            binding.cardDetails.startDateTitle.getLocationOnScreen(location)
-//            smoothScrollTo(0, location[1] - binding.toolbar.height, 800)
-            val arr = IntArray(2)
-            binding.scrollView.getLocationOnScreen(arr)
-            Toast.makeText(this@LeaveSheetActivity, "${arr[0]}, ${arr[1]}", Toast.LENGTH_SHORT)
-                .show()
-        }
+    private fun guide() = FancyShowCaseView.Builder(this)
+//        .focusOn(findViewById(R.id.action_overflow_btn))
+        .focusOn(findViewById(R.id.menu_more))
+        .showOnce("guide_more")
+        .title("点击右上角查看设置")
+        .build()
+        .show()
 
-        val backBtnCaseView = FancyShowCaseView.Builder(this)
-            .enableAutoTextPosition()
-            .fitSystemWindows(true)
-            .focusOn(binding.backButton)
-            .focusShape(FocusShape.ROUNDED_RECTANGLE)
-            .title("长按返回按钮进入编辑页面")
-            .roundRectRadius(40)
-            .build()
 
-        val addAnnexCaseView = FancyShowCaseView.Builder(this)
-            .enableAutoTextPosition()
-            .fitSystemWindows(true)
-            .focusOn(binding.cardAnnexList.headline)
-            .title("长按附件列表标题添加附件")
-            .build()
+    override fun onReleaseAvailable(activity: Activity, releaseDetails: ReleaseDetails): Boolean {
+        val versionName = releaseDetails.shortVersion
+        val versionCode = releaseDetails.version
+        val releaseNotes = releaseDetails.releaseNotes
+        val releaseNotesUrl = releaseDetails.releaseNotesUrl
 
-        val actionOverflowCaseView = FancyShowCaseView.Builder(this)
-            .enableAutoTextPosition()
-            .fitSystemWindows(true)
-            .focusOn(findViewById(R.id.action_overflow_btn))
-            .title("点击这里查看更多设置")
-            .build()
-
-        FancyShowCaseQueue().apply {
-            add(backBtnCaseView)
-            add(addAnnexCaseView)
-            add(actionOverflowCaseView)
-            completeListener = object : OnCompleteListener {
-                override fun onComplete() {
-                    Toast.makeText(this@LeaveSheetActivity, "Finished", Toast.LENGTH_SHORT).show()
-                }
+        val dialogBuilder = MaterialAlertDialogBuilder(activity)
+            .setTitle("新版本: $versionName")
+            .setMessage(releaseNotes)
+            .setPositiveButton("更新") { _, _ ->
+                Distribute.notifyUpdateAction(UpdateAction.UPDATE)
             }
-            //show()
+
+        if (!releaseDetails.isMandatoryUpdate) {
+            dialogBuilder.setNegativeButton("延迟") { _, _ ->
+                Distribute.notifyUpdateAction(UpdateAction.POSTPONE)
+            }
         }
+        dialogBuilder.setCancelable(false)
+        dialogBuilder.show()
+
+        // Return true if you're using your own dialog, false otherwise
+        return true
     }
 
-
-    private fun showSettingsDialog() {
-        val binding = DialogSettingsBinding.inflate(layoutInflater, null, false)
-        binding.apply {
-            lifecycleOwner = this@LeaveSheetActivity
-            facultyAuditVisible = viewModel.facultyAuditVisible
-
-            facultyAuditVisibilitySwitch.setOnCheckedChangeListener { _, check ->
-                lifecycleScope.launch {
-                    SettingsDataStore.saveFacultyAuditVisible(check)
-                }
-            }
-
-            facultyAuditVisibilityPreference.setOnClickListener {
-                facultyAuditVisibilitySwitch.isChecked = !facultyAuditVisibilitySwitch.isChecked
-            }
-        }
-
-        val dialog = MaterialAlertDialogBuilder(this)
-            .setTitle("设置")
-            .setView(binding.root)
-            .create()
-
-        dialog.window?.setLayout(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.WRAP_CONTENT
-        )
-
-        dialog.setOnShowListener {
-            with(this@LeaveSheetActivity.binding.scrollView) {
-                smoothScrollTo(0, children.first().height - height, 2000)
-            }
-        }
-
-        dialog.show()
-    }
-
-
-    private fun showAboutDialog() {
-        Analytics.trackEvent("About clicked")
-
-        val appIcon = packageManager.getApplicationIcon(packageName)
-        val binding = DialogAboutBinding.inflate(layoutInflater, null, false)
-        binding.apply {
-            icon.setImageDrawable(appIcon)
-
-            sourceCode.movementMethod = LinkMovementMethod.getInstance()
-            sourceCode.text = getString(
-                R.string.about_view_source_code,
-                "<b><a href=\"https://github.com/bqliang/LeaveSheet\">GitHub</a></b>"
-            ).toHtml()
-
-            versionName.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                packageManager.getPackageInfo(
-                    packageName,
-                    PackageManager.PackageInfoFlags.of(0)
-                ).versionName
-            } else {
-                packageManager.getPackageInfo(packageName, 0).versionName
-            }
-        }
-
-        MaterialAlertDialogBuilder(this)
-            .setView(binding.root)
-            .show()
-    }
+    override fun onNoReleaseAvailable(activity: Activity?) {}
 }

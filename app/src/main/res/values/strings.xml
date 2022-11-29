@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">假条: 我免费啦</string>
+    <string name="toolbar_title">本科生请假</string>
 
     <!-- about dialog -->
     <string name="about_view_source_code"><![CDATA[在 %s 查看源码]]></string>
 
-    <!-- settings dialog -->
-    <string name="faculty_audit_visibility_status">当前状态: %s</string>
+    <!-- shortcut -->
+    <string name="shortcut_pass_code_label">出入通行证</string>
+    <string name="shortcut_health_code">粤康码</string>
+    <string name="shortcut_nfu_bus">南苑BUS</string>
 </resources>

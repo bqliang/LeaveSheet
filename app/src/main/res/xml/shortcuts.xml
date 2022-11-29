@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <shortcut
+        android:icon="@drawable/ic_pass_code"
+        android:shortcutId="pass_code"
+        android:shortcutShortLabel="@string/shortcut_pass_code_label">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="alipays://platformapi/startapp?appId=20000067&amp;url=https://bqliangdev.gitee.io/nfu-alipay-pass-code" />
+    </shortcut>
+
+    <shortcut
+        android:icon="@drawable/ic_health_code"
+        android:shortcutId="health_code"
+        android:shortcutShortLabel="@string/shortcut_health_code">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="weixin://dl/business/?t=QDZVQEO2z9f" />
+    </shortcut>
+
+    <shortcut
+        android:icon="@drawable/ic_bus"
+        android:shortcutId="nfu_bus"
+        android:shortcutShortLabel="@string/shortcut_nfu_bus">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="alipays://platformapi/startapp?appId=20000067&amp;url=http://nfuedu.zftcloud.com/campusbus_index/ticket/index.html" />
+    </shortcut>
+
+</shortcuts>

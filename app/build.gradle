@@ -2,13 +2,13 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
-    id 'com.google.protobuf' version '0.9.1'
+    id 'kotlinx-serialization'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin' version '2.0.1'
 }
 
 def srcDirs = [
         'main',
-        'edit'
+        'settings'
 ]
 
 android {
@@ -81,8 +81,16 @@ android {
 }
 
 dependencies {
-    // ViewPager2
-    implementation("androidx.viewpager2:viewpager2:1.0.0")
+    // MMKV
+    implementation 'com.tencent:mmkv:1.2.14'
+    // RecyclerViewSwipeDecorator
+    implementation 'com.github.xabaras:RecyclerViewSwipeDecorator:1.4'
+    // Preference
+    implementation 'androidx.preference:preference-ktx:1.2.0'
+    // Timber
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+    // swipe refresh layout
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     // FancyShowCaseView
     implementation 'com.github.faruktoptas:FancyShowCaseView:1.3.9'
     // Jetpack Room
@@ -91,25 +99,26 @@ dependencies {
     kapt 'androidx.room:room-compiler:2.4.3'
     // Kotlin Extensions and Coroutines support for Room
     implementation 'androidx.room:room-ktx:2.4.3'
-    // rikkaX Switch Bar
-    implementation 'dev.rikka.rikkax.widget:switchbar:1.0.2'
+    // RikkaX Simple Menu
+    implementation 'dev.rikka.rikkax.preference:simplemenu-preference:1.0.3'
     // splashscreen
-    implementation 'androidx.core:core-splashscreen:1.0.0-rc01'
+    implementation 'androidx.core:core-splashscreen:1.0.0'
     // RikkaX Html
     implementation("dev.rikka.rikkax.html:html:1.1.2")
     implementation("dev.rikka.rikkax.html:html-ktx:1.1.2")
     // App Center
-    implementation 'com.microsoft.appcenter:appcenter-analytics:4.4.5'
-    implementation 'com.microsoft.appcenter:appcenter-crashes:4.4.5'
-    implementation "com.microsoft.appcenter:appcenter-distribute:4.4.5"
+    def appCenterSdkVersion = '5.0.0'
+    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-distribute:${appCenterSdkVersion}"
 
     // Preferences DataStore (SharedPreferences like APIs)
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
     // Typed DataStore (Typed API surface, such as Proto)
     implementation 'androidx.datastore:datastore:1.0.0'
-    implementation 'com.google.protobuf:protobuf-javalite:3.21.8'
-    // MMKV
-    implementation 'com.tencent:mmkv:1.2.14'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
+    // Immutable Collections Library for Kotlin
+    implementation 'org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5'
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     // ViewModel
@@ -127,22 +136,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-}
-
-protobuf {
-    protoc {
-        artifact = 'com.google.protobuf:protoc:3.21.8'
-    }
-
-    generateProtoTasks {
-        all().each { task ->
-            task.builtins {
-                java {
-                    option 'lite'
-                }
-            }
-        }
-    }
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 }
