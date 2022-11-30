@@ -12,10 +12,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
-open class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Timber.d("Task id is $taskId")
         super.onCreate(savedInstanceState)
         if (isNightModeActive()) setDarkStatusBar() else setLightStatusBar()
     }
@@ -54,8 +57,6 @@ open class BaseActivity : AppCompatActivity() {
             window.decorView.systemUiVisibility =
                 window.decorView.systemUiVisibility xor View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
-
-
 }
 
 

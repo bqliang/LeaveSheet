@@ -8,7 +8,7 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetClass="com.bqliang.leavesheet.main.PassPortActivity"
-            android:targetPackage="com.bqliang.leavesheet" />
+            android:targetPackage="com.bqliang.leavesheet.debug" />
     </shortcut>
 
     <shortcut

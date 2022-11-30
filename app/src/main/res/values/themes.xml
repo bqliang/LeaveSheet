@@ -11,8 +11,6 @@
     </style>
 
     <style name="Theme.LeaveSheet" parent="Theme.MyApp">
-        <!-- Customize your theme here. -->
-        <item name="toolbarStyle">@style/ThemeOverlay.LeaveSheet.ToolBar</item>
         <!-- to set id for toolbar menu overflow button -->
         <item name="actionOverflowButtonStyle">@style/ThemeOverlay.LeaveSheet.ActionOverFlowButton</item>
     </style>
@@ -35,9 +33,16 @@
         <item name="titleTextAppearance">@style/TextAppearance.LeaveSheet.ToolBar.Title</item>
     </style>
 
-    <!-- 工具栏标题文字 -->
+    <!-- 请假条工具栏标题文字 -->
     <style name="TextAppearance.LeaveSheet.ToolBar.Title" parent="TextAppearance.Material3.TitleLarge">
         <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <!-- 通行证工具栏标题文字 -->
+    <style name="TextAppearance.PassCode.ToolBar.Title" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 
     <style name="MaterialPreferenceThemeOverlay" parent="PreferenceThemeOverlay">

@@ -21,21 +21,29 @@
         android:theme="@style/Theme.MyApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
         <activity
-            android:theme="@style/Theme.MyApp"
+            android:name=".main.PassPortActivity"
+            android:exported="false"
+            android:launchMode="standard"
+            android:documentLaunchMode="intoExisting"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".settings.SettingsActivity"
-            android:exported="false"/>
-
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.MyApp" />
         <activity
             android:name=".main.LeaveSheetActivity"
             android:exported="true"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />

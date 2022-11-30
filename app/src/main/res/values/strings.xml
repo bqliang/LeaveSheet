@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">假条: 我免费啦</string>
-    <string name="toolbar_title">本科生请假</string>
 
     <!-- about dialog -->
     <string name="about_view_source_code"><![CDATA[在 %s 查看源码]]></string>

@@ -13,19 +13,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".main.LeaveSheetActivity">
+        tools:context=".main.WebViewActivity">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            style="@style/ThemeOverlay.LeaveSheet.ToolBar"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="@dimen/leave_sheet_toolbar_size"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:menu="@menu/leavesheet_menu"
-            app:navigationIcon="@drawable/ic_outline_close_24"
-            app:title="@string/toolbar_title"
+            app:menu="@menu/webview_menu"
             app:titleMarginStart="0dp" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

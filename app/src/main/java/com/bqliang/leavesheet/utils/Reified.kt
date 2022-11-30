@@ -5,10 +5,10 @@ import android.content.Intent
 import android.os.Build
 import java.io.Serializable
 
-inline fun <reified T> launchActivity(context: Context, block: Intent.() -> Unit = {}) {
-    val intent = Intent(context, T::class.java)
+inline fun <reified T> Context.launchActivity(block: Intent.() -> Unit = {}) {
+    val intent = Intent(this, T::class.java)
     intent.block()
-    context.startActivity(intent)
+    startActivity(intent)
 }
 
 inline fun <reified T : Serializable> Intent.serializable(key: String): T? = when {
