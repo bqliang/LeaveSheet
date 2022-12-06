@@ -10,8 +10,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }      //增加 jitPack Maven 仓库
+        maven("https://jitpack.io") //增加 jitPack Maven 仓库
     }
 }
 rootProject.name = "Leave Sheet"
-include ':app'
+include(":app")
