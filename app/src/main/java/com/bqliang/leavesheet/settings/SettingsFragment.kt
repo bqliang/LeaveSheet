@@ -1,5 +1,7 @@
 package com.bqliang.leavesheet.settings
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -83,6 +85,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
             summary = BuildConfig.VERSION_NAME
             setOnPreferenceClickListener {
                 showAboutDialog()
+                true
+            }
+        }
+
+        val feedback = Preference(context).apply {
+            title = "建议反馈"
+            setIcon(R.drawable.round_chat_bubble_outline_24)
+            setOnPreferenceClickListener {
+                feedback()
                 true
             }
         }
@@ -342,6 +353,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             title = "其他"
             addPreference(facultyAuditVisible)
             addPreference(about)
+            addPreference(feedback)
         }
 
         preferenceScreen = screen
@@ -394,6 +406,36 @@ class SettingsFragment : PreferenceFragmentCompat() {
             facultyAuditVisible.isChecked = visible
             facultyAuditVisible.setIcon(if (visible) R.drawable.ic_round_visibility_24 else R.drawable.ic_round_visibility_off_24)
             facultyAuditVisible.summary = "当前状态：${if (visible) "显示" else "隐藏"}"
+        }
+    }
+
+    private fun feedback() {
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "message/rfc822"
+            putExtra(Intent.EXTRA_EMAIL, arrayOf("bqliang@outlook.com"))
+            putExtra(Intent.EXTRA_SUBJECT, "[建议反馈] 请假条: 我免费啦")
+            putExtra(Intent.EXTRA_TEXT, """
+                ------------------
+                app 名称: ${getString(R.string.app_name)}
+                app 版本: ${BuildConfig.VERSION_NAME}
+                设备 Android 版本: ${Build.VERSION.SDK_INT}
+                设备型号: ${Build.MODEL}
+                安装来源: ${getInstallPackageName()}
+                ------------------
+                
+                请勿删改以上内容，否则邮件将被自动删除。
+                在此处输入您的建议或反馈: 
+            """.trimIndent())
+        }
+
+        try {
+            startActivity(Intent.createChooser(intent, "选择一个邮件客户端"))
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(
+                requireContext(),
+                "没有找到邮件客户端",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -593,5 +635,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
             .setView(binding.root)
             .create()
             .show()
+    }
+
+
+    private fun getInstallPackageName() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        MyApp.context.packageManager.getInstallSourceInfo(MyApp.context.packageName).installingPackageName
+    } else {
+        @Suppress("deprecation")
+        MyApp.context.packageManager.getInstallerPackageName(MyApp.context.packageName)
     }
 }
