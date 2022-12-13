@@ -8,4 +8,5 @@
     <string name="shortcut_pass_code_label">出入通行证</string>
     <string name="shortcut_health_code">粤康码</string>
     <string name="shortcut_nfu_bus">南苑BUS</string>
+    <string name="shortcut_fake_scan">假装扫码</string>
 </resources>

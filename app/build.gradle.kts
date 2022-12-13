@@ -77,7 +77,8 @@ android {
             res {
                 val srcDirs = listOf(
                     "main",
-                    "settings"
+                    "settings",
+                    "scan"
                 ).map { "src/main/java/com/bqliang/leavesheet/$it/res" }.plus("src/main/res")
                 setSrcDirs(srcDirs)
             }
@@ -86,6 +87,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.guolin.permissionX)
+    implementation(libs.huawei.scanPlus)
     implementation(libs.tencent.mmkv)
     implementation(libs.timber)
     implementation(libs.rikkaX.preference.simplemenu)

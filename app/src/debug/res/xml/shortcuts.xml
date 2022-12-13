@@ -29,4 +29,14 @@
             android:data="alipays://platformapi/startapp?appId=20000067&amp;url=http://nfuedu.zftcloud.com/campusbus_index/ticket/index.html" />
     </shortcut>
 
+    <shortcut
+        android:icon="@drawable/ic_fake_scan"
+        android:shortcutId="fake_scan"
+        android:shortcutShortLabel="@string/shortcut_fake_scan">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.bqliang.leavesheet.scan.ScanActivity"
+            android:targetPackage="com.bqliang.leavesheet.debug" />
+    </shortcut>
+
 </shortcuts>

@@ -2,6 +2,7 @@ package com.bqliang.leavesheet.main
 
 import android.graphics.Color
 import com.bqliang.leavesheet.R
+import com.bqliang.leavesheet.utils.SoundPoolUtil
 import com.bqliang.leavesheet.utils.launchActivity
 
 class PassPortActivity : WebViewActivity() {
@@ -35,5 +36,11 @@ class PassPortActivity : WebViewActivity() {
 
     override fun onNavigationOnClick() {
         launchActivity<LeaveSheetActivity>()
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        SoundPoolUtil.release()
     }
 }
