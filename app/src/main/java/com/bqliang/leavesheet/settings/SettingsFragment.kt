@@ -68,7 +68,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val screen = preferenceManager.createPreferenceScreen(context)
 
         // 其他
-        val facultyAuditVisible = SwitchPreference(context).apply {
+        val facultyAuditVisible = MaterialSwitchPreference(context).apply {
             key = "faculty_audit_visible"
             title = "院系办公室审批流程"
             setOnPreferenceChangeListener { _, newValue ->
